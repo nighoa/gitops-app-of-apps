@@ -1,0 +1,208 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: helm-service-kube-grafana
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+    namespace: monitoring
+  project: service-applications
+  source:
+    chart: grafana
+    parameters:
+        - name: ingress.annotations.cert-manager\.io/cluster-issuer
+          value: letsencrypt
+        - name: image.tag
+          value: 9.3.2
+    values: |-
+      persistence:
+        enabled: true
+        storageClassName: scw-bssd-retain
+        accessModes:
+          - ReadWriteOnce
+        size: 10Gi
+
+      resources:
+        requests:
+          cpu: "300m"
+          memory: "150Mi"
+        limits:
+          cpu: "600m"
+          memory: "250Mi"
+
+      adminUser: admin
+      adminPassword: Kaliop2023
+
+      ingress:
+        enabled: true
+        ingressClassName: "traefik"
+        hosts:
+          - monitoring.svc.ademe.infrawan.net
+        tls:
+          - secretName: monitoring-cert
+            hosts:
+              - monitoring.svc.ademe.infrawan.net
+
+      grafana.ini:
+        paths:
+          data: /var/lib/grafana/
+          logs: /var/log/grafana
+          plugins: /var/lib/grafana/plugins
+          provisioning: /etc/grafana/provisioning
+        analytics:
+          check_for_updates: true
+        log:
+          mode: console
+        log.console:
+          format: text
+          level: info
+        grafana_net:
+          url: 'https://monitoring.svc.ademe.infrawan.net'
+        server:
+          domain: "{{ if (and .Values.ingress.enabled .Values.ingress.hosts) }}{{ .Values.ingress.hosts | first }}{{ end }}"
+        auth:
+          disable_login_form: false
+        auth.anonymous:
+          enabled: false
+          org_role: Editor
+        auth.basic:
+          enabled: false
+        panels:
+          disable_sanitize_html: true
+        plugins:
+          enable_alpha: true
+        smtp:
+          enabled: true
+          from_address: grafana-cromology-preprod@kaliop.com
+          host: mx6.infrawan.net:80
+          skip_verify: true
+
+      dashboardProviders:
+        dashboardproviders.yaml:
+          apiVersion: 1
+          providers:
+          - name: 'default'
+            orgId: 1
+            folder: ''
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/default
+
+      dashboards:
+        default:
+          # Logging dashboard - https://grafana.com/grafana/dashboards/7752
+          logging:
+            gnetId: 7752
+            revision: 5
+            datasource: prometheus
+          # all these charts are hosted at https://grafana.com/grafana/dashboards/{id}
+          apiserver:
+            gnetId: 12006
+            revision: 1
+            datasource: prometheus
+          autoscaler:
+            gnetId: 3831
+            revision: 1
+            datasource: prometheus
+          capacity:
+            gnetId: 13125
+            revision: 2
+            datasource: prometheus
+          certmanager:
+            gnetId: 11001
+            revision: 1
+            datasource: prometheus
+          deployment:
+            gnetId: 8588
+            revision: 1
+            datasource: prometheus
+          kubelet:
+            gnetId: 12123
+            revision: 1
+            datasource: prometheus
+          metrics:
+            gnetId: 13332
+            revision: 12
+            datasource: prometheus
+          pods:
+            gnetId: 747
+            revision: 2
+            datasource: prometheus
+          promtail:
+            gnetId: 14055
+            revision: 5
+            datasource: prometheus
+          volumes:
+            gnetId: 11454
+            revision: 14
+            datasource: prometheus
+          mysql:
+            gnetId: 14057
+            revision: 1
+            datasource: prometheus
+          redis:
+            gnetId: 14091
+            revision: 1
+            datasource: prometheus
+          elasticsearch:
+            gnetId: 14191
+            revision: 1
+            datasource: prometheus
+          traefik:
+            gnetId: 4475
+            revision: 5
+            datasource: prometheus
+
+      datasources:
+        datasources.yaml:
+          apiVersion: 1
+          datasources:
+          - name: alertmanager
+            type: alertmanager
+            url: http://helm-service-kube-stack-pr-alertmanager:9093
+            access: proxy
+            orgId: 1
+            jsonData:
+              implementation: prometheus
+          - name: loki
+            type: loki
+            access: proxy
+            default: false
+            editable: true
+            url: http://helm-service-kube-loki:3100
+            maximumLines: "300"
+            orgId: 1
+            jsonData:
+              manageAlerts: true
+              alertmanagerUid: alertmanager
+          - name: prometheus
+            type: prometheus
+            access: proxy
+            default: false
+            editable: true
+            url: http://helm-service-kube-stack-pr-prometheus:9090
+            maximumLines: "300"
+            orgId: 1 
+  path: .
+  repoURL: https://grafana.github.io/helm-charts
+  targetRevision: 6.50.2
+syncPolicy:
+  automated:
+    allowEmpty: true
+    prune: true
+    selfHeal: true
+  retry:
+    backoff:
+      duration: 30s
+      factor: 2
+      maxDuration: 2m
+    limit: 5
+  syncOptions:
+    - Validate=false
+    - CreateNamespace=true
+    - PruneLast=true
