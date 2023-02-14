@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: root
+  name: monitoring
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
-  project: default
+    namespace: monitoring
+  project: monitoring
   source:
     path: apps/
     repoURL: https://github.com/nighoa/gitops-app-of-apps.git
