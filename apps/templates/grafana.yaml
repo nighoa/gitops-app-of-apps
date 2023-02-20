@@ -12,8 +12,8 @@ spec:
   project: monitoring
   source:
     chart: grafana
+    repoURL: https://grafana.github.io/helm-charts
     helm:
-      repoURL: https://grafana.github.io/helm-charts
       targetRevision: 6.50.2
       parameters:
         - name: ingress.annotations.cert-manager\.io/cluster-issuer
