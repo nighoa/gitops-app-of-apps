@@ -66,7 +66,7 @@ spec:
         grafana_net:
           url: 'https://monitoring-test.svc.ademe.infrawan.net'
         server:
-          domain: "{{ if (and .Values.ingress.enabled .Values.ingress.hosts) }}{{ .Values.ingress.hosts | first }}{{ end }}"
+          domain: "https://monitoring-test.svc.ademe.infrawan.net"
         auth:
           disable_login_form: false
         auth.anonymous:
