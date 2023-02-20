@@ -13,8 +13,9 @@ spec:
   source:
     chart: grafana
     repoURL: https://grafana.github.io/helm-charts
+    path: .
+    targetRevision: 6.50.2
     helm:
-      targetRevision: 6.50.2
       parameters:
         - name: ingress.annotations.cert-manager\.io/cluster-issuer
           value: letsencrypt
