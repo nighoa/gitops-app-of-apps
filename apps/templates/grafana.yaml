@@ -15,6 +15,40 @@ spec:
     helm:
     repoURL: https://grafana.github.io/helm-charts
     targetRevision: 6.50.2
+    helm:
+    parameters:
+      - name: ingress.annotations.cert-manager\.io/cluster-issuer
+        value: letsencrypt
+      - name: image.tag
+        value: 9.3.2
+    values: |-
+      persistence:
+        enabled: true
+        storageClassName: scw-bssd-retain
+        accessModes:
+          - ReadWriteOnce
+        size: 10Gi
+
+      resources:
+        requests:
+          cpu: "300m"
+          memory: "150Mi"
+        limits:
+          cpu: "600m"
+          memory: "250Mi"
+
+      adminUser: admin
+      adminPassword: Kaliop2023
+
+      ingress:
+        enabled: true
+        ingressClassName: "traefik"
+        hosts:
+          - monitoring.svc.ademe.infrawan.net
+        tls:
+          - secretName: monitoring-cert
+            hosts:
+              - monitoring.svc.ademe.infrawan.net
   syncPolicy:
     automated:
       prune: true
