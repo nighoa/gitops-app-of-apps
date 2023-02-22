@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       # will generate applications with different names for example (dev-color-app, test-color-app, etc..)
-      name: '{{namespace}}-color-app'
+      name: '{{"{{"}}namespace{{"}}"}}-color-app'
     spec:
       # applications will be in default project for argocd
       project: default
@@ -25,4 +25,4 @@ spec:
         # default cluster as destination, you can define multiple clusters in ArgoCD UI
         server: https://kubernetes.default.svc
         # will deploy to different namespaces as different destinations 
-        namespace: '{{namespace}}'
+        namespace: '{{"{{"}}namespace{{"}}"}}'
