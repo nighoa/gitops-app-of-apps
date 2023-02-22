@@ -105,4 +105,4 @@ spec:
       volumes:
         - name: site-files
           persistentVolumeClaim:
-            claimName: site-files-preprod-primequal-1
+            claimName: site-files
