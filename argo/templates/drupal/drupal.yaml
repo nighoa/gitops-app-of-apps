@@ -9,6 +9,9 @@ spec:
   destination:
     namespace: drupal-testing
     server: {{ .Values.spec.destination.server }}
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
   project: applications
   source:
     path: apps/drupal
@@ -18,6 +21,3 @@ spec:
       releaseName: helm-drupal-ademe
       valueFiles:
         - ../../apps/drupal/values-{{ .Values.applications.drupal.source.clusterDest }}.yaml
-    syncPolicy:
-      syncOptions:
-      - CreateNamespace=true
