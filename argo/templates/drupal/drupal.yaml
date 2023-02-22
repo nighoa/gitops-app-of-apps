@@ -13,7 +13,7 @@ spec:
           destination: kapsule_cluster_horsprod
   template:
     metadata:
-      name: drupal-testing-{{ name }}
+      name: 'drupal-testing-{{ name }}'
       namespace: argocd
       finalizers:
         - resources-finalizer.argocd.argoproj.io
