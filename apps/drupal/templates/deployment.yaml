@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "helm-drupal.fullname" . }}
+  labels:
+    app: {{ template "helm-drupal.name" . }}
+    chart: {{ template "helm-drupal.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.front.replicaCount }}
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: {{ template "helm-drupal.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "helm-drupal.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+    {{- with .Values.front.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - name: mailcatcher
+          image: schickling/mailcatcher
+          ports:
+            - containerPort: 1025
+              protocol: TCP
+            - containerPort: 1080
+              protocol: TCP
+          imagePullPolicy: Always
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.front.image.repository }}:{{ .Values.front.image.tag }}"
+          imagePullPolicy: {{ .Values.front.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          env:
+            {{- if .Values.front.drupal.databasePasswordSecretName }}
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.front.drupal.databasePasswordSecretName | quote }}
+                  key: {{ .Values.front.drupal.databasePasswordSecretKey | quote }}
+            {{- end }}
+            {{- if .Values.front.drupal.smtpPasswordSecretName }}
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.front.drupal.smtpPasswordSecretName | quote  }}
+                  key: smtp-password
+            {{- end }}
+            {{- if .Values.front.drupal.recaptchaSiteKeySecretName }}
+            - name: RECAPTCHA_SITE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.front.drupal.recaptchaSiteKeySecretName | quote  }}
+                  key: site_key
+            {{- end }}
+            {{- if .Values.front.drupal.recaptchaSecretKeySecretName }}
+            - name: RECAPTCHA_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.front.drupal.recaptchaSecretKeySecretName | quote  }}
+                  key: secret_key
+            {{- end }}
+            {{- if .Values.front.drupal.extraEnvVars }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.front.drupal.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
+          envFrom:
+            {{- if .Values.front.drupal.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "common.tplvalues.render" (dict "value" .Values.front.drupal.extraEnvVarsCM "context" $) }}
+            {{- end }}
+          volumeMounts:
+            - name: site-files
+              mountPath: /var/www/html/sites/default/files
+          {{- if .Values.front.probes.liveness.enable }}
+          livenessProbe:
+            {{- toYaml .Values.front.probes.liveness.config | nindent 12 }} 
+          {{- end }}
+          {{- if .Values.front.probes.readiness.enable }}
+          readinessProbe:
+            {{- toYaml .Values.front.probes.readiness.config | nindent 12 }} 
+          {{- end }}
+          resources:
+{{ toYaml .Values.front.resources | indent 12 }}
+    {{- with .Values.front.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.front.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.front.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: site-files
+          persistentVolumeClaim:
+            claimName: site-files-preprod-primequal-1

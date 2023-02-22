@@ -1,0 +1,37 @@
+{{- if .Values.front.drupal.extraEnvVarsCM }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "common.tplvalues.render" (dict "value" .Values.front.drupal.extraEnvVarsCM "context" $) }}
+data:
+  {{- if .Values.front.drupal.configMapValues.baseUrl }}
+  BASE_URL: {{ .Values.front.drupal.configMapValues.baseUrl | quote }}
+  {{- end }}
+  {{- if .Values.front.drupal.configMapValues.baseUrlWaf }}
+  BASE_URL_WAF: {{ .Values.front.drupal.configMapValues.baseUrlWaf | quote }}
+  {{- end }}
+  {{- if .Values.front.drupal.configMapValues.mysqlDatabase }}
+  MYSQL_DATABASE: {{ .Values.front.drupal.configMapValues.mysqlDatabase | quote }}
+  {{- end }}
+  {{- if .Values.front.drupal.configMapValues.mysqlHost }}
+  MYSQL_HOST: {{ .Values.front.drupal.configMapValues.mysqlHost | quote }}
+  {{- end }}
+  {{- if .Values.front.drupal.configMapValues.mysqlPort }}
+  MYSQL_PORT: {{ .Values.front.drupal.configMapValues.mysqlPort | quote }}
+  {{- end }}
+  {{- if .Values.front.drupal.configMapValues.mysqlUser }}
+  MYSQL_USER: {{ .Values.front.drupal.configMapValues.mysqlUser | quote }}
+  {{- end }}
+  {{- if .Values.front.drupal.configMapValues.smtpHost }}
+  SMTP_HOST: {{ .Values.front.drupal.configMapValues.smtpHost | quote }}
+  {{- end }}
+  {{- if .Values.front.drupal.configMapValues.smtpPort }}
+  SMTP_PORT: {{ .Values.front.drupal.configMapValues.smtpPort | quote }}
+  {{- end }}
+  {{- if .Values.front.drupal.configMapValues.smtpProtocol }}
+  SMTP_PROTOCOL: {{ .Values.front.drupal.configMapValues.smtpProtocol | quote }}
+  {{- end }}
+  {{- if .Values.front.drupal.configMapValues.smtpUsername }}
+  SMTP_USERNAME: {{ .Values.front.drupal.configMapValues.smtpUsername | quote }}
+  {{- end }}
+{{- end }}

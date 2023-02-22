@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "helm-drupal.fullname" . }}
+  labels:
+    app: {{ template "helm-drupal.name" . }}
+    chart: {{ template "helm-drupal.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.front.service.type }}
+  ports:
+    - port: {{ .Values.front.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "helm-drupal.name" . }}
+    release: {{ .Release.Name }}

@@ -1,0 +1,29 @@
+{{- if and (.Values.front.persistence.enabled) (not .Values.front.persistence.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: site-files
+  labels: 
+    app.kubernetes.io/component: front
+  {{- if .Values.front.persistence.annotations }}
+  annotations: {{- toYaml .Values.front.persistence.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+  {{- range .Values.front.persistence.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.front.persistence.size | quote }}
+  {{- if .Values.front.persistence.storageclassname }}
+  storageClassName: {{ .Values.front.persistence.storageclassname }}
+  {{- end }}
+  {{- if .Values.front.persistence.selector }}
+  selector: {{- include "common.tplvalues.render" (dict "value" .Values.front.persistence.selector "context" $) | nindent 4 }}
+  {{- end }}
+  {{- if .Values.front.persistence.dataSource }}
+  dataSource: {{- include "common.tplvalues.render" (dict "value" .Values.front.persistence.dataSource "context" $) | nindent 4 }}
+  {{- end }}
+  {{- include "common.storage.class" (dict "persistence" .Values.front.persistence "global" .Values.global) | nindent 4 }}
+{{- end }}
