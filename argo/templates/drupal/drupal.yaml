@@ -10,8 +10,13 @@ spec:
     namespace: drupal-testing
     server: {{ .Values.spec.destination.server }}
   syncPolicy:
+    automated:
+      prune: true
+      self_heal: true
+      allow_empty: true
     syncOptions:
     - CreateNamespace=true
+    - PruneLast=true
   project: applications
   source:
     path: apps/drupal
