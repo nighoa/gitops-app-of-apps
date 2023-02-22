@@ -15,6 +15,11 @@ front:
     ##
     pullSecrets:
       - name : ecr-private-secret-namespace-scw-primequal
+  
+  service:
+    type: ClusterIP
+    port: 80
+    name: drupal-service
 
   ingress:
     enabled: true
