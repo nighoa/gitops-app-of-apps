@@ -1,33 +1,24 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: drupalmulticluster
+  name: guestbook
 spec:
   generators:
   - list:
       elements:
-      - cluster: service
-        url: in-cluster
-      - cluster: preprod
-        url: kapsule_cluster_horsprod
+      - cluster: engineering-dev
+        url: https://kubernetes.default.svc
+      - cluster: engineering-prod
+        url: https://kubernetes.default.svc
   template:
     metadata:
-      name: 'drupal-testing'
+      name: '{{cluster}}-guestbook'
     spec:
-      destination:
-        namespace: drupal-testing
-        name: '{{url}}'
-      syncPolicy:
-        automated: {}
-        syncOptions:
-        - CreateNamespace=true
-        - PruneLast=true
-      project: applications
+      project: default
       source:
-        path: apps/drupal
-        repoURL: {{ .Values.applications.drupalpreprod.source.repoURL }}
-        targetRevision: {{ .Values.applications.drupalpreprod.source.targetRevision }}
-        helm:
-          releaseName: helm-drupal-ademe
-          valueFiles:
-            - ../../apps/drupal/values-{{ .Values.applications.drupalpreprod.source.env }}.yaml
+        repoURL: https://github.com/argoproj/applicationset.git
+        targetRevision: HEAD
+        path: examples/list-generator/guestbook/{{cluster}}
+      destination:
+        server: '{{url}}'
+        namespace: guestbook
