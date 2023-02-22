@@ -7,21 +7,19 @@ spec:
   generators:
   - list:
       elements:
-      - cluster: cluster-service
-        env: service
-        destination: in-cluster
-      - cluster: cluster-preprod
-        env: preprod
-        destination: kapsule_cluster_horsprod
+      - cluster: service
+        url: in-cluster
+      - cluster: preprod
+        url: kapsule_cluster_horsprod
   template:
     metadata:
-      name: 'drupal-testing-{{env}}'
+      name: 'drupal-testing-{{cluster}}'
       finalizers:
         - resources-finalizer.argocd.argoproj.io
     spec:
       destination:
         namespace: drupal-testing
-        name: '{{destination}}'
+        name: '{{url}}'
       syncPolicy:
         automated: {}
         syncOptions:
