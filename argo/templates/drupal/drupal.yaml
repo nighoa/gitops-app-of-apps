@@ -8,14 +8,14 @@ spec:
   - list:
       elements:
       - cluster: cluster-service
-        name: service
+        env: service
         destination: in-cluster
       - cluster: cluster-preprod
-        name: preprod
+        env: preprod
         destination: kapsule_cluster_horsprod
   template:
     metadata:
-      name: 'drupal-testing-{{name}}'
+      name: 'drupal-testing-{{env}}'
       finalizers:
         - resources-finalizer.argocd.argoproj.io
     spec:
