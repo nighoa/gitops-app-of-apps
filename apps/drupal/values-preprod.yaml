@@ -39,6 +39,20 @@ front:
       cpu: 100m
       memory: 400Mi
 
+  probes:
+    liveness:
+      enable: false
+      config:
+        httpGet:
+          path: /
+          port: http
+    readiness:
+      enable: false
+      config:
+        httpGet:
+          path: /
+          port: http
+
   persistence:
     enabled: true
     path: /var/www/html/sites/default/files
