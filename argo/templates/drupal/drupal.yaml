@@ -1,13 +1,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: drupal
+  name: drupal-testing
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
-    namespace: drupal
+    namespace: drupal-testing
     server: {{ .Values.spec.destination.server }}
   project: applications
   source:
