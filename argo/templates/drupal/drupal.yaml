@@ -13,7 +13,7 @@ spec:
         url: kapsule_cluster_horsprod
   template:
     metadata:
-      name: 'drupal-testing-{{cluster}}'
+      name: '{{cluster}}-drupal-testing'
       finalizers:
         - resources-finalizer.argocd.argoproj.io
     spec:
