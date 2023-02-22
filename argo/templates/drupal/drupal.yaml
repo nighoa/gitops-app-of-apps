@@ -12,7 +12,7 @@ spec:
         url: kapsule_cluster_horsprod
   template:
     metadata:
-      name: '{{cluster}}-drupal-testing'
+      name: 'drupal-testing'
     spec:
       destination:
         namespace: drupal-testing
