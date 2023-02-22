@@ -1,24 +1,28 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: guestbook
+  name: color-applicaitonset
+  namespace: argocd
 spec:
   generators:
   - list:
       elements:
-      - cluster: engineering-dev
-        url: https://kubernetes.default.svc
-      - cluster: engineering-prod
-        url: https://kubernetes.default.svc
+      - namespace: dev
+      - namespace: test
+      - namespace: uat
   template:
     metadata:
-      name: '{{cluster}}-guestbook'
+      # will generate applications with different names for example (dev-color-app, test-color-app, etc..)
+      name: '{{namespace}}-color-app'
     spec:
+      # applications will be in default project for argocd
       project: default
       source:
-        repoURL: https://github.com/argoproj/applicationset.git
+        repoURL: https://github.com/AmrAlaaYassen/ArgoCD-ApplicationSet-Demo.git
         targetRevision: HEAD
-        path: examples/list-generator/guestbook/{{cluster}}
+        path: list-generator-example/deployment
       destination:
-        server: '{{url}}'
-        namespace: guestbook
+        # default cluster as destination, you can define multiple clusters in ArgoCD UI
+        server: https://kubernetes.default.svc
+        # will deploy to different namespaces as different destinations 
+        namespace: '{{namespace}}'
