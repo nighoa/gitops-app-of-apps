@@ -10,9 +10,7 @@ spec:
     namespace: drupal-testing
     server: {{ .Values.spec.destination.server }}
   syncPolicy:
-    automated:
-      prune: true
-      allow_empty: true
+    automated: {}
     syncOptions:
     - CreateNamespace=true
     - PruneLast=true
