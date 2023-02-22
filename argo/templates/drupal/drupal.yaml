@@ -7,9 +7,11 @@ spec:
   generators:
   - list:
       elements:
-      - name: service
+      - cluster: cluster-service
+        name: service
         destination: in-cluster
-      - name: preprod
+      - cluster: cluster-preprod
+        name: preprod
         destination: kapsule_cluster_horsprod
   template:
     metadata:
