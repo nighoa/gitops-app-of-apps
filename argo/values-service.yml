@@ -4,3 +4,9 @@ spec:
   source:
     repoURL: https://github.com/nighoa/gitops-app-of-apps.git
     targetRevision: HEAD
+
+applications:
+  drupal:
+    source:
+      repoURL: https://github.com/nighoa/gitops-app-of-apps.git
+      targetRevision: HEAD

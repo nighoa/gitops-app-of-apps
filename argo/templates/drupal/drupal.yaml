@@ -12,9 +12,12 @@ spec:
   project: applications
   source:
     path: apps/drupal
-    repoURL: {{ .Values.spec.source.repoURL }}
-    targetRevision: HEAD
+    repoURL: {{ .Values.applications.drupal.source.repoURL }}
+    targetRevision: {{ .Values.applications.drupal.source.targetRevision }}
     helm:
       releaseName: helm-drupal-ademe
       valueFiles:
         - ../../apps/drupal/values.yaml
+    syncPolicy:
+      syncOptions:
+      - CreateNamespace=true
