@@ -17,7 +17,7 @@ front:
       - name : ecr-private-secret-namespace-scw-primequal
 
   ingress:
-    hostname: preprod-primequal.hp.ademe.infrawan.net
+    hostname: preprod-testing-primequal.svc.ademe.infrawan.net
 
   resources:
     limits:
@@ -33,7 +33,7 @@ front:
     accessModes:
       - ReadWriteOnce
     storageclassname: scw-bssd-retain
-    size: 10Gi
+    size: 20Gi
 
   drupal:
     ## SecretName ref recaptcha
@@ -59,8 +59,8 @@ front:
     
     configMapValues:
       # Values so set in ConfigMap
-      baseUrl: "https://preprod-primequal.hp.ademe.infrawan.net"
-      baseUrlWaf: "https://preprod-primequal-waf.hp.ademe.infrawan.net"
+      baseUrl: "https://preprod-testing-primequal.svc.ademe.infrawan.net"
+      baseUrlWaf: "https://preprod-testing-primequal-waf.svc.ademe.infrawan.net"
       mysqlDatabase: "horsprod-primequal"
       mysqlHost: "51.159.27.223"
       mysqlPort: "7600"
