@@ -2,7 +2,6 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: drupalmulticluster
-  namespace: argocd
 spec:
   generators:
   - list:
@@ -14,8 +13,6 @@ spec:
   template:
     metadata:
       name: '{{cluster}}-drupal-testing'
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
     spec:
       destination:
         namespace: drupal-testing
