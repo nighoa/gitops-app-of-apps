@@ -17,7 +17,7 @@ spec:
     helm:
       releaseName: helm-drupal-ademe
       valueFiles:
-        - ../../apps/drupal/values.yaml
+        - ../../apps/drupal/values-{{ .Values.applications.drupal.source.clusterDest }}.yaml
     syncPolicy:
       syncOptions:
       - CreateNamespace=true
