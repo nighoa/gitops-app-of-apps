@@ -8,7 +8,7 @@ metadata:
 spec:
   destination:
     namespace: drupal-testing
-    server: {{ .Values.applications.drupalpreprod.destination.name }}
+    name: {{ .Values.applications.drupalpreprod.destination.name }}
   syncPolicy:
     automated: {}
     syncOptions:
