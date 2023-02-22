@@ -6,7 +6,7 @@ spec:
     targetRevision: HEAD
 
 applications:
-  drupal-service:
+  drupalservice:
     source:
       repoURL: https://github.com/nighoa/gitops-app-of-apps.git
       targetRevision: HEAD
@@ -14,7 +14,7 @@ applications:
       destination:
         server: https://kubernetes.default.svc
 
-  drupal-preprod:
+  drupalpreprod:
     source:
       repoURL: https://github.com/nighoa/gitops-app-of-apps.git
       targetRevision: HEAD
