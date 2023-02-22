@@ -8,7 +8,7 @@ metadata:
 spec:
   destination:
     namespace: drupal-testing
-    server: {{ .Values.spec.destination.server }}
+    server: {{ .Values.applications.drupal-service.destination.server }}
   syncPolicy:
     automated: {}
     syncOptions:
@@ -17,9 +17,9 @@ spec:
   project: applications
   source:
     path: apps/drupal
-    repoURL: {{ .Values.applications.drupal.source.repoURL }}
-    targetRevision: {{ .Values.applications.drupal.source.targetRevision }}
+    repoURL: {{ .Values.applications.drupal-service.source.repoURL }}
+    targetRevision: {{ .Values.applications.drupal-service.source.targetRevision }}
     helm:
       releaseName: helm-drupal-ademe
       valueFiles:
-        - ../../apps/drupal/values-{{ .Values.applications.drupal.source.clusterDest }}.yaml
+        - ../../apps/drupal/values-{{ .Values.applications.drupal-service.source.env }}.yaml

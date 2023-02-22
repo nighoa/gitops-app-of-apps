@@ -1,0 +1,23 @@
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://github.com/nighoa/gitops-app-of-apps.git
+    targetRevision: HEAD
+
+applications:
+  drupal-service:
+    source:
+      repoURL: https://github.com/nighoa/gitops-app-of-apps.git
+      targetRevision: HEAD
+      env: service
+      destination:
+        server: https://kubernetes.default.svc
+
+  drupal-preprod:
+    source:
+      repoURL: https://github.com/nighoa/gitops-app-of-apps.git
+      targetRevision: HEAD
+      env: preprod
+      destination:
+        name: kapsule_cluster_horsprod

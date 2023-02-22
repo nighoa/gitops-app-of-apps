@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: drupal-testing
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: drupal-testing
+    server: {{ .Values.applications.drupal-preprod.destination.name }}
+  syncPolicy:
+    automated: {}
+    syncOptions:
+    - CreateNamespace=true
+    - PruneLast=true
+  project: applications
+  source:
+    path: apps/drupal
+    repoURL: {{ .Values.applications.drupal-preprod.source.repoURL }}
+    targetRevision: {{ .Values.applications.drupal-preprod.source.targetRevision }}
+    helm:
+      releaseName: helm-drupal-ademe
+      valueFiles:
+        - ../../apps/drupal/values-{{ .Values.applications.drupal-preprod.source.env }}.yaml
