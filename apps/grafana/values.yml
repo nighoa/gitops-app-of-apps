@@ -1,0 +1,4 @@
+grafana:
+  env:
+    TEST: test
+  fqdn: grafana.k8s.demo.kaliop.net
