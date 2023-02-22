@@ -17,4 +17,4 @@ spec:
     helm:
       releaseName: helm-drupal-ademe
       valueFiles:
-        - ../../apps/drupal/values.yml
+        - ../../apps/drupal/values.yaml
