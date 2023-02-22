@@ -1,10 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet
 metadata:
-  name: "drupal-testing-{{ name }}"
+  name: drupalmulticluster
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
   generators:
   - list:
@@ -13,20 +11,27 @@ spec:
         destination: in-cluster
       - name: preprod
         destination: kapsule_cluster_horsprod
-  destination:
-    namespace: drupal-testing
-    name: {{ destination }}
-  syncPolicy:
-    automated: {}
-    syncOptions:
-    - CreateNamespace=true
-    - PruneLast=true
-  project: applications
-  source:
-    path: apps/drupal
-    repoURL: {{ .Values.applications.drupalpreprod.source.repoURL }}
-    targetRevision: {{ .Values.applications.drupalpreprod.source.targetRevision }}
-    helm:
-      releaseName: helm-drupal-ademe
-      valueFiles:
-        - ../../apps/drupal/values-{{ .Values.applications.drupalpreprod.source.env }}.yaml
+  template:
+    metadata:
+      name: "drupal-testing-{{ name }}"
+      namespace: argocd
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      destination:
+        namespace: drupal-testing
+        name: {{ destination }}
+      syncPolicy:
+        automated: {}
+        syncOptions:
+        - CreateNamespace=true
+        - PruneLast=true
+      project: applications
+      source:
+        path: apps/drupal
+        repoURL: {{ .Values.applications.drupalpreprod.source.repoURL }}
+        targetRevision: {{ .Values.applications.drupalpreprod.source.targetRevision }}
+        helm:
+          releaseName: helm-drupal-ademe
+          valueFiles:
+            - ../../apps/drupal/values-{{ .Values.applications.drupalpreprod.source.env }}.yaml
