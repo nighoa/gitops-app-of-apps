@@ -5,12 +5,12 @@ metadata:
   namespace: argocd
 spec:
   generators:
-  - list:
-      elements:
-        - name: service
-          destination: in-cluster
-        - name: preprod
-          destination: kapsule_cluster_horsprod
+    - list:
+        elements:
+          - name: service
+            destination: in-cluster
+          - name: preprod
+            destination: kapsule_cluster_horsprod
   template:
     metadata:
       name: 'drupal-testing-{{ name }}'
