@@ -16,28 +16,8 @@ front:
     pullSecrets:
       - name : ecr-private-secret-namespace-scw-primequal
 
-  service:
-    type: ClusterIP
-    port: 80
-    name: drupal-service
-
   ingress:
-    enabled: true
-    ingressClassName: "traefik"
-    certManager: true
-    tls: true
-    pathType: ImplementationSpecific
     hostname: preprod-primequal.hp.ademe.infrawan.net
-    annotations:
-      cert-manager.io/cluster-issuer: "letsencrypt"
-
-  #ingress:
-  #  traefik:
-  #    enabled: true
-  #    ingressClassName: "traefik"
-  #    entryPoint: websecure
-  #    tls: true
-  #    hostname: drupal-helm.svc.ademe.infrawan.net
 
   resources:
     limits:
@@ -89,9 +69,3 @@ front:
       smtpPort: "1025"
       smtpProtocol: "standard"
       smtpUsername: ""
-
-  nodeSelector: {}
-
-  tolerations: []
-
-  affinity: {}
